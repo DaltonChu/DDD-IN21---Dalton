@@ -1,0 +1,557 @@
+General_Social_Survey_2016 <- read.csv("/Users/Da_Chu/Desktop/Academics/Intersession2021/Dealing_w_Dirty_Data/DDD-I21/Final_Proj_Benchmarks/General_Social_Survey.csv")
+
+install.packages("tidyverse")
+library(tidyverse)
+install.packages("pander")
+library(pander)
+library(magrittr)
+install.packages("ggplot2")
+library(ggplot2)
+
+
+##Initial Examination of Dataset:
+#All column names
+colnames(General_Social_Survey_2016)
+#[1] "year"          "id_"           "wrkstat"       "hrs2"         
+#[5] "marital"       "martype"       "sphrs2"        "sibs"         
+#[9] "childs"        "age"           "agekdbrn"      "educ"         
+#[13] "degree"        "sex"           "race"          "born"         
+#[17] "income"        "rincome"       "partyid"       "pres12"       
+#[21] "if12who"       "polviews"      "happy"         "emailmin"     
+#[25] "emailhr"       "advfront"      "harass5"       "hrs1"         
+#[29] "evwork"        "wrkslf"        "wrkgovt"       "occ10"        
+#[33] "indus10"       "divorce"       "widowed"       "spwrksta"     
+#[37] "sphrs1"        "spevwork"      "spwrkslf"      "spocc10"      
+#[41] "spind10"       "pawrkslf"      "paocc10"       "paind10"      
+#[45] "mawrkslf"      "maocc10"       "maind10"       "paeduc"       
+#[49] "maeduc"        "speduc"        "padeg"         "madeg"        
+#[53] "spdeg"         "dipged"        "spdipged"      "whenhs"       
+#[57] "whencol"       "voedcol"       "voedncol"      "res16"        
+#[61] "reg16"         "mobile16"      "family16"      "famdif16"     
+#[65] "mawrkgrw"      "incom16"       "parborn"       "granborn"     
+#[69] "hompop"        "babies"        "preteen"       "teens"        
+#[73] "adults"        "unrelat"       "earnrs"        "region"       
+#[77] "xnorcsiz"      "srcbelt"       "size"          "vote12"       
+#[81] "natspac"       "natenvir"      "natheal"       "natcity"      
+#[85] "natcrime"      "natdrug"       "nateduc"       "natrace"      
+#[89] "natarms"       "nataid"        "natfare"       "natroad"      
+#[93] "natsoc"        "natmass"       "natpark"       "natchld"      
+#[97] "natsci"        "natenrgy"      "natspacy"      "natenviy"     
+#[101] "nathealy"      "natcityy"      "natcrimy"      "natdrugy"    
+#[105] "nateducy"      "natracey"      "natarmsy"      "nataidy"    
+#[109] "natfarey"      "eqwlth"        "tax"           "spkath"     
+#[113] "colath"        "libath"        "spkrac"        "colrac"     
+#[117] "librac"        "spkcom"        "colcom"        "libcom"     
+#[121] "spkmil"        "colmil"        "libmil"        "spkhomo"    
+#[125] "colhomo"       "libhomo"       "spkmslm"       "colmslm"    
+#[129] "libmslm"       "cappun"        "gunlaw"        "courts"     
+#[133] "grass"         "relig"         "denom"         "other"      
+#[137] "jew"           "fund"          "attend"        "reliten"    
+#[141] "postlife"      "pray"          "popespks"      "relig16"    
+#[145] "denom16"       "oth16"         "jew16"         "fund16"     
+#[149] "sprel"         "spden"         "spother"       "spjew"      
+#[153] "spfund"        "prayer"        "bible"         "racopen"    
+#[157] "raclive"       "affrmact"      "wrkwayup"      "closeblk"   
+#[161] "closewht"      "hapmar"        "hapcohab"      "health"     
+#[165] "life"          "helpful"       "fair"          "trust"      
+#[169] "confinan"      "conbus"        "conclerg"      "coneduc"    
+#[173] "confed"        "conlabor"      "conpress"      "conmedic"   
+#[177] "contv"         "conjudge"      "consci"        "conlegis"   
+#[181] "conarmy"       "obey"          "popular"       "thnkself"   
+#[185] "workhard"      "helpoth"       "socrel"        "socommun"   
+#[189] "socfrend"      "socbar"        "aged"          "weekswrk"   
+#[193] "partfull"      "joblose"       "jobfind"       "satjob"     
+#[197] "richwork"      "class_"        "rank"          "satfin"     
+#[201] "finalter"      "finrela"       "wksub"         "wksubs"     
+#[205] "wksup"         "wksups"        "unemp"         "union_"     
+#[209] "getahead"      "parsol"        "kidssol"       "fepol"      
+#[213] "abdefect"      "abnomore"      "abhlth"        "abpoor"     
+#[217] "abrape"        "absingle"      "abany"         "chldidel"   
+#[221] "pillok"        "sexeduc"       "divlaw"        "premarsx"   
+#[225] "teensex"       "xmarsex"       "homosex"       "pornlaw"    
+#[229] "xmovie"        "spanking"      "letdie1"       "suicide1"   
+#[233] "suicide2"      "suicide3"      "suicide4"      "polhitok"   
+#[237] "polabuse"      "polmurdr"      "polescap"      "polattak"   
+#[241] "fear"          "owngun"        "pistol"        "shotgun"    
+#[245] "rifle"         "rowngun"       "hunt"          "news"       
+#[249] "tvhours"       "phone"         "coop"          "comprend"   
+#[253] "form"          "fechld"        "fepresch"      "fefam"      
+#[257] "racdif1"       "racdif2"       "racdif3"       "racdif4"    
+#[261] "rushed"        "bored"         "helppoor"      "helpnot"    
+#[265] "helpsick"      "helpblk"       "god"           "reborn"     
+#[269] "savesoul"      "wlthwhts"      "wlthblks"      "workwhts"   
+#[273] "workblks"      "intlwhts"      "intlblks"      "liveblks"   
+#[277] "livewhts"      "marblk"        "marasian"      "marhisp"    
+#[281] "marwht"        "racwork"       "discaff"       "fejobaff"   
+#[285] "discaffm"      "discaffw"      "fehire"        "evbrkdwn"   
+#[289] "relpersn"      "sprtprsn"      "othlang"       "othlang1"   
+#[293] "othlang2"      "spklang"       "betrlang"      "compuse"    
+#[297] "webmob"        "usewww"        "wwwhr"         "wwwmin"     
+#[301] "huclean"       "mntlhlth"      "stress"        "numemps"    
+#[305] "newsfrom"      "scifrom"       "seeksci"       "nextgen"    
+#[309] "toofast"       "astrolgy"      "astrosci"      "scibnfts"   
+#[313] "balpos"        "balneg"        "scistudy"      "scitext"    
+#[317] "expdesgn"      "exptext"       "odds1"         "odds2"      
+#[321] "hotcore"       "radioact"      "boyorgrl"      "lasers"     
+#[325] "electron"      "viruses"       "bigbang"       "condrift"   
+#[329] "evolved"       "earthsun"      "solarrev"      "coldeg1"    
+#[333] "majorcol"      "colsci"        "colscinm"      "hsmath"     
+#[337] "hsbio"         "hschem"        "hsphys"        "nanowill"   
+#[341] "nanoben"       "nanoharm"      "intintl"       "intfarm"    
+#[345] "inteduc"       "intsci"        "intecon"       "inttech"    
+#[349] "intmed"        "intspace"      "intenvir"      "intmil"     
+#[353] "visnhist"      "viszoo"        "vissci"        "scinews1"   
+#[357] "scinews2"      "scinews3"      "scientgo"      "scienthe"   
+#[361] "scientod"      "scientbe"      "bigbang1"      "ratetone"   
+#[365] "obeylaw"       "protest1"      "protest3"      "revspeak"   
+#[369] "revpub"        "verdict"       "cutgovt"       "makejobs"   
+#[373] "lessreg"       "hlphitec"      "savejobs"      "cuthours"   
+#[377] "spenviro"      "sphlth"        "sppolice"      "spschool"   
+#[381] "sparms"        "spretire"      "spunemp"       "sparts"     
+#[385] "jobsall"       "pricecon"      "hlthcare"      "aidold"     
+#[389] "aidindus"      "aidunemp"      "equalize"      "aidcol"     
+# [393] "aidhouse"      "polint"        "grnlaws"       "poleff11"  
+# [397] "poleff13"      "poleff16"      "poleff17"      "wotrial"   
+# [401] "tapphone"      "stoprndm"      "corrupt1"      "corrupt2"  
+# [405] "bribe"         "posslq"        "posslqy"       "goodlife"   
+# [409] "taxrich"       "taxmid"        "taxpoor"       "marhomo"    
+# [413] "meovrwrk"      "wrkearn"       "wrkenjoy"      "strngun"   
+# [417] "secjob"        "hiinc"         "promotn"       "wrkindp"   
+# [421] "hlpoths"       "hlpsoc"        "hrsmoney"      "rsecjob"   
+# [425] "rhiinc"        "rpromotn"      "rintjob"       "rwrkindp"   
+# [429] "rhlpoths"      "rhlpsoc"       "xhaustn"       "bossemps"   
+# [433] "cowrkers"      "jobsat"        "localnum"      "wantjob1"   
+# [437] "useskill"      "helporg1"      "prideorg"      "stayorg3"  
+# [441] "proudwrk"      "leavejob"      "worryjob"      "evjob"     
+# [445] "whyjbend"      "wantjob2"      "getjob"        "lookjob"    
+# [449] "pubagncy"      "priagncy"      "wantads"       "adforjob"   
+# [453] "appemps"       "askhelp"       "worknow"       "dailywrk"   
+# [457] "timeoff"       "jbintfam"      "famintjb"      "jbtrain"    
+# [461] "jobeasy"       "nounemp1"      "nounemp2"      "nounemp3"  
+# [465] "nounemp4"      "skltrain"      "spwrkgvt"      "relactiv"   
+# [469] "nukegen"       "indusgen"      "chemgen"       "watergen"   
+# [473] "tempgen"       "genegen"       "letin1"        "partners"   
+# [477] "matesex"       "frndsex"       "acqntsex"      "pikupsex"   
+# [481] "paidsex"       "othersex"      "sexsex"        "sexfreq"   
+# [485] "numwomen"      "nummen"        "partnrs5"      "sexsex5" 
+# [489] "evpaidsx"      "evstray"       "condom"        "relatsex"  
+# [493] "evidu"         "idu30"         "evcrack"       "crack30"   
+# [497] "hivtest"       "hivtest1"      "hivtest2"      "sexornt"   
+# [501] "realinc"       "realrinc"      "coninc"        "conrinc"    
+# [505] "ethnic"        "eth1"          "eth2"          "eth3"       
+# [509] "ethnum"        "hispanic"      "racecen1"      "racecen2"  
+# [513] "racecen3"      "uscitzn"       "fucitzn"       "vetyears"  
+# [517] "dwelling"      "dwelown"       "worda"         "wordb"     
+# [521] "wordc"         "wordd"         "worde"         "wordf"     
+# [525] "wordg"         "wordh"         "wordi"         "wordj"     
+# [529] "wordsum"       "relate1"       "gender1"       "old1"      
+# [533] "mar1"          "away1"         "where1"        "relate2"   
+# [537] "gender2"       "old2"          "mar2"          "away2"     
+# [541] "where2"        "relate3"       "gender3"       "old3"      
+# [545] "mar3"          "away3"         "where3"        "relate4"   
+# [549] "gender4"       "old4"          "mar4"          "away4"     
+# [553] "where4"        "relate5"       "gender5"       "old5"     
+# [557] "mar5"          "away5"         "where5"        "relate6"   
+# [561] "gender6"       "old6"          "mar6"          "away6"    
+# [565] "where6"        "relate7"       "gender7"       "old7"       
+# [569] "mar7"          "away7"         "where7"        "relate8"    
+# [573] "gender8"       "old8"          "mar8"          "away8"     
+# [577] "where8"        "relate9"       "gender9"       "old9"      
+# [581] "mar9"          "away9"         "where9"        "relate10"   
+# [585] "gender10"      "old10"         "mar10"         "away10"     
+# [589] "where10"       "relate11"      "gender11"      "old11"     
+# [593] "mar11"         "away11"        "where11"       "relate12"  
+# [597] "gender12"      "old12"         "mar12"         "away12"     
+# [601] "where12"       "relate13"      "gender13"      "old13"      
+# [605] "mar13"         "away13"        "where13"       "relate14"   
+# [609] "gender14"      "old14"         "mar14"         "away14"     
+# [613] "where14"       "relhhd1"       "relhhd2"       "relhhd3"    
+# [617] "relhhd4"       "relhhd5"       "relhhd6"       "relhhd7"    
+# [621] "relhhd8"       "relhhd9"       "relhhd10"      "relhhd11"   
+# [625] "relhhd12"      "relhhd13"      "relhhd14"      "hefinfo"    
+# [629] "hhrace"        "respnum"       "hhtype"        "hhtype1"    
+# [633] "famgen"        "rplace"        "rvisitor"      "visitors"  
+# [637] "relhh1"        "relhh2"        "relhh3"        "relhh4"    
+# [641] "relhh5"        "relhh6"        "relhh7"        "relhh8"    
+# [645] "relhh9"        "relhh10"       "relhh11"       "relhh12"    
+# [649] "relhh13"       "relhh14"       "relsp1"        "relsp2"    
+# [653] "relsp3"        "relsp4"        "relsp5"        "relsp6"    
+# [657] "relsp7"        "relsp8"        "relsp9"        "relsp10"   
+# [661] "relsp11"       "relsp12"       "relsp13"       "relsp14"   
+# [665] "dateintv"      "isco88"        "paisco88"      "maisco88"  
+# [669] "spisco88"      "uswar"         "uswary"        "cohort"    
+# [673] "zodiac"        "inthisp"       "intrace1"      "intrace2"   
+# [677] "intrace3"      "whoelse1"      "whoelse2"      "whoelse3"  
+# [681] "whoelse4"      "whoelse5"      "whoelse6"      "intid"     
+# [685] "feeused"       "feelevel"      "lngthinv"      "intage"    
+# [689] "intethn"       "mode"          "intsex"        "intyrs"    
+# [693] "ballot"        "version"       "issp"          "formwt"    
+# [697] "sampcode"      "sample"        "oversamp"      "phase"     
+# [701] "spanself"      "spanint"       "spaneng"       "wtss"      
+# [705] "wtssnr"        "wtssall"       "vstrat"        "vpsu"      
+# [709] "prestg10"      "prestg105plus" "sppres10"    "sppres105plus"
+# [713] "papres10"      "papres105plus" "mapres10"    "mapres105plus"
+# [717] "sei10"         "pasei10"       "pasei10educ"   "pasei10inc"
+# [721] "masei10"       "masei10educ"   "masei10inc"    "spsei10"   
+# [725] "spsei10educ"   "spsei10inc"    "isco08"        "paisco08"  
+# [729] "maisco08"      "spisco08"      "cowrksta"      "cowrkslf"  
+# [733] "coevwork"      "cohrs1"        "cohrs2"        "coocc10"   
+# [737] "coind10"       "copres10"      "coeduc"        "codeg"     
+# [741] "codipged"      "cogradtounder" "income16"      "rincom16"  
+# [745] "corel"         "coden"         "coother"       "cojew"     
+# [749] "cofund"        "agedpar"       "agedchld"      "wksub1"    
+# [753] "wksubs1"       "wksup1"        "wksups1"       "union1"    
+# [757] "suinum"        "suinum1"       "suirel1"       "suineg1"   
+# [761] "suiclse1"      "suitime1"      "suimths1"      "suiyrs1"  
+# [765] "suirel2"       "suineg2"       "suiclse2"      "suitime2"   
+# [769] "suimths2"      "suiyrs2"       "hunt1"         "stresswk"  
+# [773] "lotr1"         "lotr2"         "lotr3"         "lotr4"     
+# [777] "lotr5"         "lotr6"         "hope1"         "hope2"     
+# [781] "hope3"         "hope4"         "hope5"         "hope6"     
+# [785] "prfmnce"       "artexbt"       "prfmmus"       "prfmdan"   
+# [789] "prfmthe"       "prfmatt"       "prfmatt1"      "prfmatt2"  
+# [793] "prfmatt3"      "prfmatt4"      "prfmatt5"      "prfmfree"  
+# [797] "prfmwhy1"      "prfmwhy2"      "prfmwhy3"      "prfmwhy4"  
+# [801] "prfmwhy5"      "prfmwhy6"      "prfmwhy7"      "prfmwhy8"  
+# [805] "prfmwhy9"      "prfmwhy0"      "artatt"        "artatt1"   
+# [809] "artatt2"       "artatt3"       "artatt4"       "artatt5"   
+# [813] "artfree"       "artwhy1"       "artwhy2"       "artwhy3"   
+# [817] "artwhy4"       "artwhy5"       "artwhy6"       "artwhy7"   
+# [821] "artwhy8"       "artwhy9"       "nogo"          "nogo1"     
+# [825] "prfmcost"      "prfmint"       "prfmtrvl"      "prfmgst"   
+# [829] "prfmtime"      "prfmloc"       "prfmothr"      "artcost"   
+# [833] "artint"        "arttrvl"       "artgst"        "arttime"   
+# [837] "artloc"        "artothr"       "refrtwhy"      "prfmmostoth"
+# [841] "artmostoth"    "intuse"        "intmbile"      "intrecnt" 
+# [845] "twitter"       "facebook"      "instagrm"      "linkedin"  
+# [849] "snapchat"      "tumblr"        "whatsapp"      "googlesn"  
+# [853] "pinterst"      "flickr"        "vine"          "clssmtes"  
+# [857] "snsmoth1"      "snsmot2a"      "snsmot2b"      "snsmot2c"  
+# [861] "snsmnew"       "snsmfrst"      "intwkdym"      "intwkdyh"  
+# [865] "intwkenm"      "intwkenh"      "paidhow"       "usualhrs" 
+# [869] "mosthrs"       "leasthrs"      "sethrs"        "advsched" 
+# [873] "cesd1"         "cesd2"         "cesd3"         "cesd4"    
+# [877] "cesd5"         "bigbang2"      "evolved2"      "gendereq" 
+# [881] "prvdhlth"      "prvdold"       "prvdschl"      "gvinflu1" 
+# [885] "gvinflu2"      "polgbeco"      "taxpaid"       "taxbylaw" 
+# [889] "brlawfl"       "brnotax"       "cctv"          "emonitor" 
+# [893] "govtinfo"      "givinfusa"     "givinffor"     "marcohab"  
+# [897] "flexhrs1"      "wkpersnl"      "famorjob"      "joborfam"  
+# [901] "discwk5"       "whydisc5"      "unionsbd"      "rcontact"  
+# [905] "wkathome"      "wkwkends"      "decidwrk"      "wrkshift"  
+# [909] "chngewrk"      "nounemp5"      "nounemp6"      "extrawrk" 
+# [913] "extraern"      "jbendyr"       "jbendmo"       "exjobsat"
+# [917] "wornojob"      "newskill"      "lowpay"        "tempwork"   
+# [921] "mortravl"      "moveinus"      "moveaway"      "econsup1"  
+#[925] "worecsup"      "racethwh"      "racethhi"      "racethbl"   
+#[929] "racethas"      "racethna"      "racethot"      "coisco08"   
+#[933] "cosei10"       "cosei10educ"   "cosei10inc"   
+
+#Number of columns
+ncol(General_Social_Survey_2016)
+# 935
+# Almost 100 wow
+
+#Names of rows
+rownames(General_Social_Survey_2016)
+# First 14 rows
+#[1] "1"    "2"    "3"    "4"    "5"    "6"    "7"   
+#[8] "8"    "9"    "10"   "11"   "12"   "13"   "14"  
+# Just numbers
+
+#Number of rows
+nrow(General_Social_Survey_2016)
+# 2867
+
+
+##Since there were so many variables, I went through the first 50 columns and chose the variables that are most applicable to what I'm looking to analyze. Although this is not appropriate for actual research, I felt like this was okay since going through almost 1000 different variables for class would be too much.
+GSS_2016 <- General_Social_Survey_2016[,c("year","id_","wrkstat","marital","sibs","childs","degree","sex","race","income","partyid","pres12","polviews","happy","emailhr","wrkslf","wrkgovt","occ10","indus10","divorce")]
+
+##Reorder columns in new selective dataset to group by related columns and prioritized order
+GSS_2016 <- GSS_2016[,c("id_","year","partyid","pres12","polviews","sex","race","sibs","childs","marital","divorce","degree","income","wrkstat","indus10","occ10","wrkslf","wrkgovt","emailhr","happy")]
+               
+                                          
+##Look at the class of each selected variable 
+typeof(GSS_2016$id_)
+# double
+typeof(GSS_2016$year)
+# integer
+typeof(GSS_2016$partyid)
+# character
+typeof(GSS_2016$pres12)
+# character
+typeof(GSS_2016$polviews)
+# character
+typeof(GSS_2016$sex)
+# character
+typeof(GSS_2016$race)
+# character
+typeof(GSS_2016$age)
+# character
+typeof(GSS_2016$sibs)
+# character
+typeof(GSS_2016$childs)
+# character
+typeof(GSS_2016$marital)
+# character
+typeof(GSS_2016$divorce)
+# character
+typeof(GSS_2016$degree)
+# character
+typeof(GSS_2016$income)
+# character
+typeof(GSS_2016$wrkstat)
+# character
+typeof(GSS_2016$indus10)
+# character
+typeof(GSS_2016$occ10)
+# character
+typeof(GSS_2016$wrkslf)
+# character
+typeof(GSS_2016$wrkgovt)
+# character
+typeof(GSS_2016$emailhr)
+# character
+typeof(GSS_2016$happy)
+# character
+
+
+##And scroll through to examine and understand each variable in general
+
+# "id_" is the row number and also essentially the number assigned to each person
+
+# "year" is the year the data was compiled for each person, the entire column should be 2016 since this is a GSS 2016 survey dataset
+
+# "partyid" is the political party each person affliates themselves with and to what degree. This seems to be sort of a categorical variable that ranges on a spectrum of "Strong democrat", "Not str democrat", "Ind, near democrat", "Independent", "Ind, near rep", "Not str republican", and "Strong republican"
+
+# "pres12" is the presidential candidate that each person voted for in the 2012 election (or if they voted for a non-Rep, non-Dem candidate, or not at all)
+
+# polviews" is the actual political view each person designated themselves as
+
+# "sex" is gender
+
+# "race" is racial background
+
+# "sibs" is the number of siblings each surveyee has
+
+# "childs" is the number of children each surveyee has
+
+# "marital" is the marriage status 
+
+# "divorce" is whether or not each person has gone through a divorce in their past
+
+# "degree" is if each surveyee has completed a degree and what type (high school, college, graduate, etc.)
+
+# "income" is the relative family income each person has filled out. This variable was a bit suspicious as it is only mentioned with the dataset that this is family income and if this income is annually, monthly, etc. Something I noticed too is that many (too many) people filled out the highest category of income here, "$25,000 or more," which makes it seem like this designation of categorical income is very off. More categories of higher income should be made above $25,000 if so many people are picking that option. 
+
+# "wrkstat" is work status
+
+# "indus10" is the industry each worked in for the majority of the 2000-2010 decade
+
+# "occ10" is the specific occupation each worked as for the majority of the 2000-2010 decade
+
+# "wrkslf" is if each surveyee works for themselves (entrepreneur) or not
+
+# "wrkgovt" is if each person works for a local, state, or federal government, or not
+
+# "emailhr" is the amount of hours each person spends checking or writing emails per day
+
+# "happy" is whether or not each person wrote down that they are generally happy and designates how happy they said they are
+
+
+##Missing Data, General Cleaning and Formatting,Variable Creation and Coding
+#Search entire dataset for any NAs (meaning missing data)
+is.na(General_Social_Survey_2016)
+# all FALSE
+# Means no NA observations/data
+
+# The first focus in cleaning this dataset was recoding the unexpected values in the survey answers of "refused", "not applicable" or "no answer" in which a surveyee refused to answer the given question. Another focus in formatting was that the surveyee column names and answers had a lot of long-winded text or typos, which I made more succinct and correct.
+
+colnames(GSS_2016)[1] <- "Survey_Number"
+colnames(GSS_2016)[2] <- "Year_Info_Collected"
+
+# partyid column data was a little convoluted, so I decided to make the column name and answers more clear
+GSS_2016$partyid[GSS_2016$partyid == "Strong democrat"] <- "Dem High"
+GSS_2016$partyid[GSS_2016$partyid == "Not str democrat"] <- "Dem Medium"
+GSS_2016$partyid[GSS_2016$partyid == "Ind,near dem"] <- "Dem Low"
+GSS_2016$partyid[GSS_2016$partyid == "Independent"] <- "Ind"
+GSS_2016$partyid[GSS_2016$partyid == "Ind,near rep"] <- "Rep Low"
+GSS_2016$partyid[GSS_2016$partyid == "Not str republican"] <- "Rep Medium"
+GSS_2016$partyid[GSS_2016$partyid == "Strong republican"] <- "Rep High"
+colnames(GSS_2016)[3] <- "Dem_Rep_Party_Id_Level"
+
+#Here in pres12, there was also missing data in that some responded a mystery answer of 5 which I just replaced with "No answer"
+GSS_2016$pres12[GSS_2016$pres12 == "5"] <- "No answer"
+
+# In pres12, got rid of extraneous text: the "Not applicable" responses meant that they didn't vote, the "No answer" responses meant that they chose not to respond, the "other candidate (specify)" meant that they voted for a non-Rep/non-Dem candidate. Clarified column name. In pres12, I left the "Don't know" responses as I felt they were still applicable to my analysis. 
+GSS_2016$pres12[GSS_2016$pres12 == "Not applicable"] <- "Didn't vote at all"
+GSS_2016$pres12[GSS_2016$pres12 == "Other candidate (specify)"] <- "3rd-party cand"
+colnames(GSS_2016)[4] <- "Pres_Cand_Vote_2012"
+
+
+# polviews column name was a little confusing along with some spelling errors
+GSS_2016$polviews[GSS_2016$polviews == "Slghtly conservative"] <- "Slightly conservative"
+GSS_2016$polviews[GSS_2016$polviews == "Extrmly conservative"] <- "Extremely conservative"
+colnames(GSS_2016)[5] <- "Political_View"
+
+colnames(GSS_2016)[6] <- "Sex"
+colnames(GSS_2016)[7] <- "Race"
+colnames(GSS_2016)[8] <- "Siblings"
+colnames(GSS_2016)[9] <- "Children"
+colnames(GSS_2016)[10] <- "Marital_Stat"
+colnames(GSS_2016)[11] <- "Divorced"
+colnames(GSS_2016)[12] <- "Edu"
+colnames(GSS_2016)[13] <- "House_Income"
+# Again it was stated that for the dataset this column was household/family income, but it never stated whether this income was annual, monthly, etc.
+colnames(GSS_2016)[14] <- "Wrk_Stat"
+colnames(GSS_2016)[15] <- "Indus_in_2000_10"
+colnames(GSS_2016)[16] <- "Occup_in_2000_10"
+colnames(GSS_2016)[17] <- "Employed_by_Self"
+colnames(GSS_2016)[18] <- "Employed_by_Gov"
+colnames(GSS_2016)[19] <- "Hrs_on_Email"
+colnames(GSS_2016)[20] <- "Curr_Happi"
+
+# No dates in this dataset!!
+
+##Misc
+# I didn't find any other data that I want to merge and couldn't think of any other necessary tasks to do.
+
+##Tables and Graphs
+
+#2012 Presidential Election
+Pres_Table <- as.data.frame(table(GSS_2016$Pres_Cand_Vote_2012))
+colnames(Pres_Table)[1] <- "Presidential_Candidate"
+colnames(Pres_Table)[2] <- "Surveyee_Votes"
+
+pander(Pres_Table, style = "rmarkdown")
+
+
+ggplot(Pres_Table, aes(x = factor(Presidential_Candidate, level = c("Obama","Romney","3rd-party cand","Didn't vote for president","Didn't vote at all","Don't know","No answer")), y = Surveyee_Votes)) +
+  geom_col(
+  fill = "purple") +
+  xlab("Presidential Candidate") +
+  ylab("Surveyee Votes") +
+  ggtitle("Votes for 2012 Presidential Election from GSS_2016") +
+  theme_bw (base_size = 6)
+  
+
+#Dem_Rep_Party_Id_Level
+Party_Table <- as.data.frame(table(GSS_2016$Dem_Rep_Party_Id_Level))
+colnames(Party_Table)[1] <- "Dem_Rep_Party_Id_Level"
+colnames(Party_Table)[2] <- "Frequency"
+
+pander(Party_Table, style = "rmarkdown")
+
+ggplot(Party_Table,aes(x = factor(Dem_Rep_Party_Id_Level, level = c("Dem High","Dem Medium","Dem Low","Ind","Rep Low","Rep Medium","Rep High","Other party","No answer")), y = Frequency)) +
+  geom_col(
+    fill = "purple") +
+  xlab("Dem-Rep Party Id Level") +
+  ylab("Frequency") +
+  ggtitle("Dem_Rep Party Id Levels in GSS_2016") +
+  theme_bw (base_size = 6)
+
+#Political View
+Polview_Table <- as.data.frame(table(GSS_2016$`Political_View`))
+colnames(Polview_Table)[1] <- "Political_View"
+colnames(Polview_Table)[2] <- "Frequency"
+
+pander(Polview_Table, style = "rmarkdown")
+
+ggplot(Polview_Table,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")), y = Frequency)) +
+  geom_col(
+    fill = "purple") +
+  xlab("Political View") +
+  ylab("Frequency") +
+  ggtitle("Political View in GSS_2016") +
+  theme_bw (base_size = 4)
+
+#2012 Pres Elect vs. Party Identity
+ggplot(data = GSS_2016, aes(x = Pres_Cand_Vote_2012)) +
+  geom_bar(aes(fill = Dem_Rep_Party_Id_Level), position = "dodge") +
+  xlab("Presidential Candidate") +
+  ylab("Freq") +
+  ggtitle("Presidential Candidate and Dem-Rep Party Id Level") +
+  theme_bw (base_size = 5)
+
+#Political View vs. Party Identity
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Dem_Rep_Party_Id_Level), position = "dodge") +
+  xlab("Political View") +
+  ylab("Freq") +
+  ggtitle("Actual Political View and Dem-Rep Party Identified With") +
+  theme_bw (base_size = 4)
+
+#Political View vs. Sex
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Sex), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Sex") +
+  theme_bw (base_size = 5)
+
+#Political View vs. Race
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Race), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Race") +
+  theme_bw (base_size = 5)
+
+ggplot(data = GSS_2016, aes(x = Race)) +
+  geom_bar(fill = "purple") +
+  xlab("Race") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Race") +
+  theme_bw (base_size = 5)
+
+#Political View vs. Children
+
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Children), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Children") +
+  theme_bw (base_size = 4)
+
+# Political View vs. Marital Status and Political View vs. Divorced
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Marital_Stat), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Marital Status") +
+  theme_bw (base_size = 4)
+
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Divorced), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Divorced") +
+  theme_bw (base_size = 4)
+
+# Political View vs. Education
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Edu), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Education") +
+  theme_bw (base_size = 4)
+
+# Political View vs. Government-Employed
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Employed_by_Gov), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Government Employed") +
+  theme_bw (base_size = 4)
+
+# Political View vs. Current Happiness
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Curr_Happi), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Education") +
+  theme_bw (base_size = 4)
+
+## See the R Markdown File now for all documentation, analysis, and conclusion!!
+
+
