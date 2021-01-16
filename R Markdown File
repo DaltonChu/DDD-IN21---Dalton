@@ -1,0 +1,374 @@
+---
+title: "DDD-IN21 Final Project Benchmark"
+author: "Dalton Chu"
+date: "1/6/2021"
+output:
+  html_document: default
+  pdf_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+``` {r prep}
+General_Social_Survey_2016 <- read.csv("/Users/Da_Chu/Desktop/Academics/Intersession2021/Dealing_w_Dirty_Data/DDD-I21/Final_Proj_Benchmarks/General_Social_Survey.csv")
+
+install.packages("tidyverse")
+library(tidyverse)
+install.packages("pander")
+library(pander)
+library(magrittr)
+install.packages("ggplot2")
+library(ggplot2)
+```
+
+
+Introduction:
+
+Hello Rhiannon! I wanted to thank you again for being so understanding about my situation at the time and teaching such an in-depth and interesting intersession class. Even though there were a few chapters on R in one of the psychology classes I took part in, it was just very basic lessons on simple manipulations with characters, strings, and numbers along with simple searches of dataframes. And that psychology course was the very first time I had coded at all, so this was essentially my first in-depth coding course! I didn't even know how to load packages before and make graphs, so I'm pretty proud of everything I was able to learn and accomplish in this class even though I may not be as advanced as others in my coding knowledge. Thanks once again for everything!
+
+The dataset I chose is General_Social_Survey_2016. I originally wanted to find a dataset that relates to business analytics, which is what I'm planning on going into the future. Yet, I couldn't find many consumer-oriented datasets I was interested in that had at least 500 observations with more than 15 variables. Once the current event of the storming of the capital occurred, my interest was piqued in analyzing the political opinions of the nation. I wasn't as interested in politics when I was younger before the last election, so I was especially interested in examining political opinions during the election before last of 2012 and the general political opinions of the nation before the rise of Donald Trump as a Republican candidate. Therefore, I chose to analyze the General_Social_Survey_2016 which contains much political opinion collection and other data on individuals after the election of 2012 before the 2016 election of Trump v. Clinton. Lastly, I was also interested in hearing about the work of Rhiannon under Professor Morgan and wanted to explore more on datasets like those that they analyze!
+
+As per the GSS website, the General Social Survey (GSS) is a nationally representative survey of adults in the United States conducted since 1972. The GSS collects data on contemporary American society in order to monitor and explain trends in opinions, attitudes and behaviors. The GSS is run by NORC at the University of Chicago, which is an independent research institution that delivers reliable data and rigorous analysis to guide critical programmatic, business, and policy decisions. The GSS is NORC's longest running project, and one of its most influential.
+
+This GSS dataset is on social data on 2867 various surveyees fully compiled by the end of 2016. I first downloaded the dataset via the General Social Survey (GSS) website on https://gss.norc.org. This was on Wednesday, January 6th. Specifically with the dataset, I would say my primary focus is examining any possible general trends of variables including social and racial and how they relate to political leanings among the population surveyed under the 2016 GSS.
+
+
+Processing:
+First, the dataset was a lot, so I took an initial look through of the dataset - generally with View(General_Social_Survey_2016), ncol(), colnames(), nrow(), etc. I later also went through many columns to understand what types of data were in each variable with the function typeof(), but it was pretty long so I won't show the code here.
+
+``` {r data examination}
+colnames(General_Social_Survey_2016)
+ncol(General_Social_Survey_2016)
+rownames(General_Social_Survey_2016)
+nrow(General_Social_Survey_2016)
+```
+
+Since there were so many variables, I went through the first 50 columns and chose the variables that are most applicable to what I'm looking to analyze. Although this is not appropriate for actual research, I felt like this was okay since going through almost 1000 different variables for class would be too much. I then reordered the columns in a new selective dataset called GSS_2016 to group by related columns and prioritized order.
+
+``` {r dataset prep}
+GSS_2016 <- General_Social_Survey_2016[,c("year","id_","wrkstat","marital","sibs","childs","age","degree","sex","race","income","partyid","pres12","polviews","happy","emailhr","wrkslf","wrkgovt","occ10","indus10","divorce")]
+GSS_2016 <- GSS_2016[,c("id_","year","partyid","pres12","polviews","sex","race","age","sibs","childs","marital","divorce","degree","income","wrkstat","indus10","occ10","wrkslf","wrkgovt","emailhr","happy")]
+```
+
+I then scrolled through to examine and understand each variable in general.
+
+"id_" is the row number and also essentially the number assigned to each person
+
+"year" is the year the data was compiled for each person, the entire column should be 2016 since this is a GSS 2016 survey dataset
+
+"partyid" is the political party each person affliates themselves with and to what degree. This seems to be sort of a categorical variable that ranges on a spectrum of "Strong democrat", "Not str democrat", "Ind, near democrat", "Independent", "Ind, near rep", "Not str republican", and "Strong republican"
+
+"pres12" is the presidential candidate that each person voted for in the 2012 election (or if they voted for a non-Rep, non-Dem candidate, or not at all)
+
+"polviews" is the actual political view each person designated themselves as
+
+"sex" is gender
+
+"race" is racial background
+
+"sibs" is the number of siblings each surveyee has
+
+"childs" is the number of children each surveyee has
+
+"marital" is the marriage status 
+
+"divorce" is whether or not each person has gone through a divorce in their past
+
+"degree" is if each surveyee has completed a degree and what type (high school, college, graduate, etc.)
+
+"income" is the relative family income each person has filled out. This variable was a bit suspicious as it is only mentioned with the dataset that this is family income and if this income is annually, monthly, etc. Something I noticed too is that many (too many) people filled out the highest category of income here, "$25,000 or more," which makes it seem like this designation of categorical income is very off. More categories of higher income should be made above $25,000 if so many people are picking that option. 
+
+"wrkstat" is work status
+
+"indus10" is the industry each worked in for the majority of the 2000-2010 decade
+
+"occ10" is the specific occupation each worked as for the majority of the 2000-2010 decade
+
+"wrkslf" is if each surveyee works for themselves (entrepreneur) or not
+
+"wrkgovt" is if each person works for a local, state, or federal government, or not
+
+"emailhr" is the amount of hours each person spends checking or writing emails per day
+
+"happy" is whether or not each person wrote down that they are generally happy and designates how happy they said they are
+
+Next, searched the entire new dataset for any NAs (meaning missing data). I got all FALSE responses which means no NA observations/data.
+
+``` {r Missing data}
+is.na(General_Social_Survey_2016)
+```
+
+
+The first focus in cleaning this dataset was recoding the unexpected values in the survey answers of "refused", "not applicable" or "no answer" in which a surveyee refused to answer the given question. Another focus in formatting was that the surveyee column names and answers had a lot of long-winded text or typos, which I made more succinct and correct.
+``` {r variables}
+colnames(GSS_2016)[1] <- "Survey Number"
+colnames(GSS_2016)[2] <- "Year Info Collected"
+```
+
+The partyid column data was a little convoluted, so I decided to make the column name and answers more clear.
+
+``` {r partyid}
+GSS_2016$partyid[GSS_2016$partyid == "Strong democrat"] <- "Dem High"
+GSS_2016$partyid[GSS_2016$partyid == "Not str democrat"] <- "Dem Medium"
+GSS_2016$partyid[GSS_2016$partyid == "Ind,near dem"] <- "Dem Low"
+GSS_2016$partyid[GSS_2016$partyid == "Independent"] <- "Ind"
+GSS_2016$partyid[GSS_2016$partyid == "Ind,near rep"] <- "Rep Low"
+GSS_2016$partyid[GSS_2016$partyid == "Not str republican"] <- "Rep Medium"
+GSS_2016$partyid[GSS_2016$partyid == "Strong republican"] <- "Rep High"
+colnames(GSS_2016)[3] <- "Dem_Rep_Party_Id_Level"
+```
+
+#Here in pres12, there was also missing data in that some responded a mystery answer of 5 which I just replaced with "No answer"
+
+``` {r pres12}
+GSS_2016$pres12[GSS_2016$pres12 == "5"] <- "No answer"
+```
+
+In pres12, got rid of extraneous text: the "Not applicable" responses meant that they didn't vote, the "No answer" responses meant that they chose not to respond, the "other candidate (specify)" meant that they voted for a non-Rep/non-Dem candidate. Clarified column name. In pres12, I left the "Don't know" responses as I felt they were still applicable to my analysis. 
+
+``` {r more pres12}
+GSS_2016$pres12[GSS_2016$pres12 == "Not applicable"] <- "Didn't vote at all"
+GSS_2016$pres12[GSS_2016$pres12 == "Other candidate (specify)"] <- "3rd-party cand"
+colnames(GSS_2016)[4] <- "Pres_Cand_Vote_2012"
+```
+
+polviews column name along with many of the rest were also a little confusing along with some spelling errors
+
+``` {r polviews and rest}
+GSS_2016$polviews[GSS_2016$polviews == "Slghtly conservative"] <- "Slightly conservative"
+GSS_2016$polviews[GSS_2016$polviews == "Extrmly conservative"] <- "Extremely conservative"
+colnames(GSS_2016)[5] <- "Political_View"
+
+colnames(GSS_2016)[6] <- "Sex"
+colnames(GSS_2016)[7] <- "Race"
+colnames(GSS_2016)[8] <- "Siblings"
+colnames(GSS_2016)[9] <- "Children"
+colnames(GSS_2016)[10] <- "Marital_Stat"
+colnames(GSS_2016)[11] <- "Divorced"
+colnames(GSS_2016)[12] <- "Edu"
+colnames(GSS_2016)[13] <- "House_Income"
+```
+Again it was stated that for the dataset this column was household/family income, but it never stated whether this income was annual, monthly, etc.
+
+``` {r more}
+colnames(GSS_2016)[14] <- "Wrk_Stat"
+colnames(GSS_2016)[15] <- "Indus_in_2000_10"
+colnames(GSS_2016)[16] <- "Occup_in_2000_10"
+colnames(GSS_2016)[17] <- "Employed_by_Self"
+colnames(GSS_2016)[18] <- "Employed_by_Gov"
+colnames(GSS_2016)[19] <- "Hrs_on_Email"
+colnames(GSS_2016)[20] <- "Curr_Happi"
+```
+
+Lastly, thankfully there were no dates or any other miscellaneous data in this dataset! I didn't find any other data that I wanted to merge and couldn't think of any other necessary tasks to do.
+
+
+Analysis:
+Next up is my analysis section!
+
+I first looked in general at the three main political categories, since that's what I'm most interested in and they're my main focus.
+
+First up was the 2012 Presidential Election votes of the surveyees of the GSS_2016 dataset! Below should be both a table made from pander() and also a graph made from ggplot! I first made a separate dataframe (Pres_Table) for this specific data and then renamed the columns in that dataframe. Next was the creation of my pander table (pretty basic but shows everything necessary) along with my ggplot graph. In my graph, I used the factor function to be able to specifically designated the order of x-axis answers. (This was what Brian and I had been talking about in the last class! I direct messaged him a link on how to do this but I guess he didn't see it :(. ) I also made sure my bar graphs had a purple fill (!) and labelled the axes and title exactly how I wanted them to be. Lastly in the graph, I edited the base size in order for the labels to not overlap and be easily readable.
+
+From looking at this simple graph of the 2012 Presidential Election votes, it's interesting to see that there were almost as many people whom voted for Obama whom just didn't vote at all. It's kind of a sad thing to pick up on, but at least (for better or for worst) this recent election had higher turnout than ever.
+
+``` {r pres}
+Pres_Table <- as.data.frame(table(GSS_2016$Pres_Cand_Vote_2012))
+colnames(Pres_Table)[1] <- "Presidential_Candidate"
+colnames(Pres_Table)[2] <- "Surveyee_Votes"
+
+pander(Pres_Table, style = "rmarkdown")
+
+ggplot(Pres_Table, aes(x = factor(Presidential_Candidate, level = c("Obama","Romney","3rd-party cand","Didn't vote for president","Didn't vote at all","Don't know","No answer")), y = Surveyee_Votes)) +
+  geom_col(
+  fill = "purple") +
+  xlab("Presidential Candidate") +
+  ylab("Surveyee Votes") +
+  ggtitle("Votes for 2012 Presidential Election from GSS_2016") +
+  theme_bw (base_size = 6)
+```
+
+Next was a table and graph on the general level each person in GSS_2016 identified with in terms of the Dem-Rep parties. I did pretty much the same with a pander table and a ggplot graph as above, also using factor() to correctly order the x-axis once again.
+
+There wasn't much I personally got of this graph besides seeing that interestingly, a significant amount of the dataset identified as Democrats. It looks like around 2/5 of the entire dataset identified as Democrats.
+
+``` {r Party}
+Party_Table <- as.data.frame(table(GSS_2016$Dem_Rep_Party_Id_Level))
+colnames(Party_Table)[1] <- "Dem_Rep_Party_Id_Level"
+colnames(Party_Table)[2] <- "Frequency"
+
+pander(Party_Table, style = "rmarkdown")
+
+ggplot(Party_Table,aes(x = factor(Dem_Rep_Party_Id_Level, level = c("Dem High","Dem Medium","Dem Low","Ind","Rep Low","Rep Medium","Rep High","Other party","No answer")), y = Frequency)) +
+  geom_col(
+    fill = "purple") +
+  xlab("Dem-Rep Party Id Level") +
+  ylab("Frequency") +
+  ggtitle("Dem_Rep Party Id Levels in GSS_2016") +
+  theme_bw (base_size = 6)
+```
+
+My third basic graph was on the general political views each surveyee identified with. This is different in that this is the conservative to liberal spectrum, which is different than party identification. Someone could identify as a conservative but actually even be a part of the Democrat party at the time because he/she agrees more with the people running the Democrat party at that specific time! Again, I made a pander table along with another ggplot graph, specifically labelling the order of the x-axis with factor().
+
+The main analysis I got from this political view graph is that even though there definitely are a long of self-identified moderates in this dataset population.
+
+``` {r political view}
+#Political View
+Polview_Table <- as.data.frame(table(GSS_2016$`Political_View`))
+colnames(Polview_Table)[1] <- "Political_View"
+colnames(Polview_Table)[2] <- "Frequency"
+
+pander(Polview_Table, style = "rmarkdown")
+
+ggplot(Polview_Table,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")), y = Frequency)) +
+  geom_col(
+    fill = "purple") +
+  xlab("Political View") +
+  ylab("Frequency") +
+  ggtitle("Political View in GSS_2016") +
+  theme_bw (base_size = 4)
+```
+
+I then began to merge my basic bar graphs to compare each along with other variables.
+First, I compared the 2012 Pres Elect graph with the Party Identity graph. For these, I wasn't really sure what to do with tables, so I simply only made ggplot graphs that merged the two basic graphs. I merged the graphs by having one of the data be the "fill" of the graph, creating a key of different colors of different bars (by including "poistion = dodge" that I found on stackoverflow). 
+
+This multi-bar graph again showed that a significant amount of people of all parties didn't really vote at all along with even a decent amount of Republicans voting for Obama too.
+
+``` {r pres vs. party}
+ggplot(data = GSS_2016, aes(x = Pres_Cand_Vote_2012)) +
+  geom_bar(aes(fill = Dem_Rep_Party_Id_Level), position = "dodge") +
+  xlab("Presidential Candidate") +
+  ylab("Freq") +
+  ggtitle("Presidential Candidate and Dem-Rep Party Id Level") +
+  theme_bw (base_size = 5)
+```
+
+
+Second, I did a Political View vs. Party Identity multi-bar graph with the same ggplot attributes.
+
+In this graph, I could see that there were A LOT of people whom identified as moderates, but still also identified as members of the Democrat party. This is really interesting and could show a significant conclusion as the Democrat party's growth as even partly a moderate party while pushing the Republican party as more of a only more extreme conservative party. Interestly, most people whom identified as Republican as identified as mainly middle Conservatives, meaning that most were not extremely conservative. Meanwhile, extremely liberal Democrats were more willing to openly identify as High Democrats.
+
+``` {r pol vs. party}
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Dem_Rep_Party_Id_Level), position = "dodge") +
+  xlab("Political View") +
+  ylab("Freq") +
+  ggtitle("Actual Political View and Dem-Rep Party Identified With") +
+  theme_bw (base_size = 5)
+```
+
+I finally then did graphs comparing political view to other variables, as I realized that political view is really was most interested in (due to people identifying with a political party not necessarily showing their views themselves).
+
+I did a multi-bar graph on political view versus gender. 
+
+There wasn't anything super revealing about this, except that there seemed to be a bit more females than males in this GSS_2016 dataset. Not sure if this just shows whom was more willing to take the survey or if females just happened to be more of the dataset randomly, but either way almost every political view category had more females than males. The moderate political view did have significantly more females than males though (almost 25% more).
+
+``` {r pol vs. sex}
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Sex), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Sex") +
+  theme_bw (base_size = 5)
+```
+
+Next, was Political View vs. Race! This is one of the most important ones pertaining to recent racial conflict events.
+
+But, the dataset didn't really also show me much (besides I guess slightly more Blacks tending to be liberal versus conservative) as I could tell that most of the dataset was heavily White which heavily affects all the data. It also didn't help at all that all other races besides Black and White were designated into one category of "Other". Different races in America really do tend to align with different political views, with for example Hispanics tending to be more liberal while Asians tending to be more conservative (I'm liberal but I can tell the average Asian is conservative - especially older Asians). I confirmed all of this was a separate ggplot graph on just Race in the GSS_2016 dataset. 
+
+``` {r pol vs. race}
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Race), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Race") +
+  theme_bw (base_size = 5)
+
+ggplot(data = GSS_2016, aes(x = Race)) +
+  geom_bar(fill = "purple") +
+  xlab("Race") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Race") +
+  theme_bw (base_size = 5)
+```
+
+I was interested if there was any correlation between children and political view, so I did a graph on that too with the same attributes once again.
+
+Sadly, I literally couldn't find any outcome of this. As both liberals and conservatives actually tended to have around the same amount of distribution of numbers of children.
+
+``` {r pol vs. children}
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Children), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Children") +
+  theme_bw (base_size = 4)
+```
+
+Marital Status and Divorced Status were two variables that I also compared with political view.
+
+My first graph of Marital Status vs. Political View showed way more conservatives were married than liberals which was a very interesting find. 
+
+My second graph of Divorced Status vs. Political View also followed this with less conservatives being divorced than liberals. 
+
+``` {r pol vs. marital and divorced}
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Marital_Stat), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Marital Status") +
+  theme_bw (base_size = 4)
+
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Divorced), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Divorced") +
+  theme_bw (base_size = 4)
+```
+
+My third to last graph was on Political View vs. Education which was very significant.
+
+Interestingly way more conservatives only had high school diplomas than liberals. Meanwhile, conservatives had around the same distribution as liberals for all other degrees. 
+
+``` {r pol vs. edu}
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Edu), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Education") +
+  theme_bw (base_size = 4)
+```
+
+
+Second to last was Political View vs. Government-Employed.
+
+For this, interestly there were a bit more government-employed conservatives than liberals, even in a Democrat presidency.
+
+``` {r pol vs. gov}
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Employed_by_Gov), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Government Employed") +
+  theme_bw (base_size = 4)
+```
+
+Lastly, I did a graph on Political View vs. Current Happiness.
+
+This final graph showed a tiny bit more conservatives being happier than liberals, which was really really interesting to me, but I couldn't figure out the reasoning :(
+
+``` {r pol vs. happy}
+ggplot(GSS_2016,aes(x = factor(Political_View, level = c("Extremely liberal","Liberal", "Slightly liberal","Moderate","Slightly conservative","Conservative","Extremely conservative","Don't know","No answer")))) +
+  geom_bar(aes(fill = Curr_Happi), position = "dodge") +
+  xlab("Self-Identified Political View") +
+  ylab("Freq") +
+  ggtitle("GSS_2016 Self-Identified Political View and Education") +
+  theme_bw (base_size = 4)
+```
+
+Conclusion:
+With this dataset, I set out to answer the questions of finding general trends in both social and racial variables in relation to political variables of the GSS_2016 dataset. I unfortunately couldn't really come to any remarkable conclusion and only had little findings along the way that didn't really add up. This could be due to me figuring out that much of the dataset was Democrat/Moderate and White to start out with. I found that almost as many people whom voted for the winning president in the election didn't vote at all. I found a lot of Moderates identified as Democrats, which could show the Democratic party as developing to attract Moderates along with more High Democrats. Conservatives tended to be more likely to be married and not previously divorced too along with having way more high school degrees maximum and being a little more likely to be government-employed.
+
+Yet, even though I wasn't able to come to a definitive finding, I was thankful that this was a really solid journey in cleaning a dataset that produced solid results, graphs, and analyses. Thanks once again for teaching me so much about R and my first in-depth coding experience :)
