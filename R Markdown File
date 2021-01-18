@@ -13,12 +13,12 @@ knitr::opts_chunk$set(echo = TRUE)
 ``` {r prep}
 General_Social_Survey_2016 <- read.csv("/Users/Da_Chu/Desktop/Academics/Intersession2021/Dealing_w_Dirty_Data/DDD-I21/Final_Proj_Benchmarks/General_Social_Survey.csv")
 
-install.packages("tidyverse")
+install.packages("tidyverse",repos = "http://cran.us.r-project.org")
 library(tidyverse)
-install.packages("pander")
+install.packages("pander",repos = "http://cran.us.r-project.org")
 library(pander)
 library(magrittr)
-install.packages("ggplot2")
+install.packages("ggplot2",repos = "http://cran.us.r-project.org")
 library(ggplot2)
 ```
 
